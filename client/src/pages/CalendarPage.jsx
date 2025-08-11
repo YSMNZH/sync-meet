@@ -1,7 +1,14 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Calendar, dateFnsLocalizer, Views } from 'react-big-calendar'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
-import { format, parse, startOfWeek, getDay, startOfMonth, endOfMonth } from 'date-fns'
+import {
+  format,
+  parse,
+  startOfWeek,
+  getDay,
+  startOfMonth,
+  endOfMonth,
+} from 'date-fns'
 import { enUS } from 'date-fns/locale'
 import axios from 'axios'
 
@@ -17,7 +24,7 @@ const localizer = dateFnsLocalizer({
 export default function CalendarPage() {
   const [events, setEvents] = useState([])
   const [view, setView] = useState(Views.MONTH)
-  const [date, setDate] = useState(new Date())  // <-- control current date
+  const [date, setDate] = useState(new Date())
   const [range, setRange] = useState(() => ({
     start: startOfMonth(new Date()),
     end: endOfMonth(new Date()),
@@ -44,12 +51,10 @@ export default function CalendarPage() {
     setLoading(false)
   }
 
-  // Update events whenever range changes
   useEffect(() => {
     fetchEvents(range)
   }, [range])
 
-  // Update range whenever date or view changes
   useEffect(() => {
     let start, end
 
@@ -57,12 +62,10 @@ export default function CalendarPage() {
       start = startOfMonth(date)
       end = endOfMonth(date)
     } else if (view === Views.WEEK) {
-      // Start from Monday to Sunday in the selected week
       start = startOfWeek(date, { weekStartsOn: 1 })
       end = new Date(start)
       end.setDate(end.getDate() + 6)
     } else {
-      // fallback for other views (if any)
       start = startOfMonth(date)
       end = endOfMonth(date)
     }
@@ -75,49 +78,85 @@ export default function CalendarPage() {
       style: {
         backgroundColor: event.color,
         color: 'white',
-        borderRadius: 8,
-        border: 'none',
-        boxShadow: '0 3px 8px rgba(0,0,0,0.18)',
-        padding: '6px 10px',
-        fontWeight: '600',
-        fontSize: '0.9rem',
-        lineHeight: 1.2,
+        borderRadius: 10,
+        border: '2px solid #fff',
+        boxShadow:
+          '0 4px 8px rgba(0, 0, 0, 0.15), 0 0 6px rgba(255, 255, 255, 0.3)',
+        padding: '8px 12px',
+        fontWeight: '700',
+        fontSize: '1rem',
+        lineHeight: 1.3,
         cursor: 'pointer',
-        transition: 'transform 0.15s ease',
+        transition: 'all 0.3s ease',
+        userSelect: 'none',
       },
-      onMouseEnter: (e) => (e.currentTarget.style.transform = 'scale(1.05)'),
-      onMouseLeave: (e) => (e.currentTarget.style.transform = 'scale(1)'),
+      onMouseEnter: (e) => {
+        e.currentTarget.style.transform = 'scale(1.08)'
+        e.currentTarget.style.boxShadow =
+          '0 8px 16px rgba(0, 0, 0, 0.25), 0 0 10px rgba(255, 255, 255, 0.5)'
+      },
+      onMouseLeave: (e) => {
+        e.currentTarget.style.transform = 'scale(1)'
+        e.currentTarget.style.boxShadow =
+          '0 4px 8px rgba(0, 0, 0, 0.15), 0 0 6px rgba(255, 255, 255, 0.3)'
+      },
     }),
     []
   )
 
+  const calendarStyles = {
+    height: '82vh',
+    borderRadius: 20,
+    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+    backgroundColor: '#ffffff',
+    padding: 24,
+    fontSize: '1rem',
+    border: '1px solid #e2e8f0',
+  }
+
+  const headerStyles = {
+    maxWidth: 960,
+    margin: '40px auto',
+    padding: '0 20px',
+    fontFamily:
+      "'Inter', system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, sans-serif",
+    color: '#1e293b',
+    backgroundColor: '#f0f9ff',
+    borderRadius: 20,
+    boxShadow: '0 15px 45px rgba(14, 165, 233, 0.15)',
+  }
+
+  const headerInnerStyles = {
+    padding: '18px 0',
+    marginBottom: 30,
+    borderBottom: '3px solid #3b82f6',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  }
+
   return (
-    <div
-      style={{
-        maxWidth: 960,
-        margin: '40px auto',
-        padding: '0 20px',
-        fontFamily: "'Inter', system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, sans-serif",
-        color: '#222',
-        backgroundColor: '#f9fafb',
-        borderRadius: 16,
-        boxShadow: '0 10px 40px rgba(0,0,0,0.08)',
-      }}
-    >
-      <header
-        style={{
-          padding: '16px 0',
-          marginBottom: 20,
-          borderBottom: '2px solid #e5e7eb',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-      >
-        <h1 style={{ margin: 0, fontWeight: 700, fontSize: '1.8rem', color: '#111827' }}>
+    <div style={headerStyles}>
+      <header style={headerInnerStyles}>
+        <h1
+          style={{
+            margin: 0,
+            fontWeight: 900,
+            fontSize: '2.2rem',
+            color: '#1e40af',
+            textShadow: '1px 1px 4px rgba(59, 130, 246, 0.3)',
+          }}
+        >
           My Calendar
         </h1>
-        <div style={{ fontSize: '1rem', color: '#6b7280' }}>
+        <div
+          style={{
+            fontSize: '1.1rem',
+            color: loading ? '#2563eb' : '#64748b',
+            fontWeight: 600,
+            fontFamily: "'Inter', sans-serif",
+          }}
+        >
           {loading ? 'Loading events...' : `${events.length} events`}
         </div>
       </header>
@@ -132,16 +171,10 @@ export default function CalendarPage() {
         date={date}
         onView={setView}
         onNavigate={setDate}
-        style={{
-          height: '82vh',
-          borderRadius: 16,
-          boxShadow: '0 6px 24px rgb(0 0 0 / 0.12)',
-          backgroundColor: 'white',
-          padding: 16,
-          fontSize: '0.95rem',
-        }}
+        style={calendarStyles}
         eventPropGetter={eventPropGetter}
         popup
+        popupOffset={15}
       />
     </div>
   )
