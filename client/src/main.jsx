@@ -12,7 +12,6 @@ import SignupPage from './pages/SignupPage.jsx'
 import './index.css'
 import './App.css'
 
-// set default Authorization header from stored token
 import axios from 'axios'
 const savedToken = localStorage.getItem('token')
 if (savedToken) {
