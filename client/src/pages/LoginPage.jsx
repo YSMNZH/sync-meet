@@ -24,11 +24,12 @@ export default function LoginPage() {
 
   return (
     <div style={{
-      minHeight: '100vh',
+      minHeight: 'calc(100vh - 64px)', 
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      background: 'linear-gradient(135deg, #dbeafe, #eff6ff)'
+      background: 'linear-gradient(135deg, #dbeafe, #eff6ff)',
+      width: '100%'
     }}>
       <form
         onSubmit={onSubmit}

@@ -22,7 +22,14 @@ export default function App() {
     `nav-link${location.pathname === path ? ' active' : ''}`
 
   return (
-    <div style={{ fontFamily: 'system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif', minHeight: '100vh', backgroundColor: '#f3f4f6' }}>
+    <div style={{
+      fontFamily: 'system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif',
+      minHeight: '100vh',
+      backgroundColor: '#f3f4f6',
+      display: 'flex',
+      flexDirection: 'column'
+    }}>
+      {/* Navbar */}
       <header
         style={{
           display: 'flex',
@@ -128,7 +135,13 @@ export default function App() {
           )}
         </nav>
       </header>
-      <main style={{ padding: '32px', maxWidth: 960, margin: '0 auto', backgroundColor: 'white', borderRadius: 8, boxShadow: '0 2px 8px rgb(0 0 0 / 0.1)' }}>
+
+      <main style={{
+        flex: 1, 
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column'
+      }}>
         <Outlet />
       </main>
 

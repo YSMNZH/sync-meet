@@ -103,21 +103,20 @@ export default function CalendarPage() {
     }),
     []
   )
+const calendarStyles = {
+  margin: '0 24px 24px 24px',  
+  height: '82vh',
+  borderRadius: 20,
+  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+  backgroundColor: '#ffffff',
+  padding: 24,
+  fontSize: '1rem',
+  border: '1px solid #e2e8f0',
+  overflow: 'hidden',        
+};
 
-  const calendarStyles = {
-    height: '82vh',
-    borderRadius: 20,
-    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-    backgroundColor: '#ffffff',
-    padding: 24,
-    fontSize: '1rem',
-    border: '1px solid #e2e8f0',
-  }
 
   const headerStyles = {
-    maxWidth: 960,
-    margin: '40px auto',
-    padding: '0 20px',
     fontFamily:
       "'Inter', system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, sans-serif",
     color: '#1e293b',
@@ -140,7 +139,7 @@ export default function CalendarPage() {
       <header style={headerInnerStyles}>
         <h1
           style={{
-            margin: 0,
+            margin : '45px',
             fontWeight: 900,
             fontSize: '2.2rem',
             color: '#1e40af',
@@ -151,6 +150,7 @@ export default function CalendarPage() {
         </h1>
         <div
           style={{
+            margin:'50px',
             fontSize: '1.1rem',
             color: loading ? '#2563eb' : '#64748b',
             fontWeight: 600,

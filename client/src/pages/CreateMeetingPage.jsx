@@ -61,7 +61,7 @@ export default function CreateMeetingPage() {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      background: 'linear-gradient(135deg, #f9fafb, #e5e7eb)',
+      background: 'linear-gradient(135deg, #dbeafe, #eff6ff)',
       padding: '20px'
     }}>
       <form

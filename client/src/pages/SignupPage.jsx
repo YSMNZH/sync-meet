@@ -29,7 +29,7 @@ export default function SignupPage() {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      background: 'linear-gradient(135deg, #dcfce7, #f0fdf4)'
+      background: 'linear-gradient(135deg, #dbeafe, #eff6ff)'
     }}>
       <form
         onSubmit={onSubmit}
@@ -49,7 +49,7 @@ export default function SignupPage() {
           margin: 0,
           fontSize: '24px',
           fontWeight: '700',
-          color: '#16a34a',
+          color: '#1d4ed8',
           textAlign: 'center'
         }}>Sign up</h2>
 
@@ -122,7 +122,7 @@ export default function SignupPage() {
           type="submit"
           style={{
             padding: '10px 16px',
-            background: 'linear-gradient(90deg, #16a34a, #22c55e)',
+            background: '#2563eb',
             color: 'white',
             fontSize: '15px',
             fontWeight: '600',
@@ -152,7 +152,7 @@ export default function SignupPage() {
 
         <p style={{ fontSize: '14px', color: '#374151', textAlign: 'center' }}>
           Already have an account?{' '}
-          <Link to="/login" style={{ color: '#16a34a', textDecoration: 'none', fontWeight: '500' }}>
+          <Link to="/login" style={{ color: '#2563eb', textDecoration: 'none', fontWeight: '500' }}>
             Login
           </Link>
         </p>

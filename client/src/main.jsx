@@ -10,7 +10,6 @@ import GoogleConnect from './pages/GoogleConnect.jsx'
 import LoginPage from './pages/LoginPage.jsx'
 import SignupPage from './pages/SignupPage.jsx'
 import './index.css'
-import './App.css'
 
 import axios from 'axios'
 const savedToken = localStorage.getItem('token')
@@ -37,5 +36,5 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <RouterProvider router={router} />
-  </React.StrictMode>,
+  </React.StrictMode>
 )
