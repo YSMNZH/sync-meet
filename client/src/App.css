@@ -1,10 +1,20 @@
+/* app.css */
 #root {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: left; /* better default for app content */
+}
+
+/* Add a container class for inner page content */
+.container {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
-  text-align: center;
 }
 
+/* Keep your existing logo styles */
 .logo {
   height: 6em;
   padding: 1.5em;
