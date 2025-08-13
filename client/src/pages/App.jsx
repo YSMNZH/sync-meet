@@ -29,7 +29,6 @@ export default function App() {
       display: 'flex',
       flexDirection: 'column'
     }}>
-      {/* Navbar */}
       <header
         style={{
           display: 'flex',
@@ -77,6 +76,9 @@ export default function App() {
           </Link>
           <Link className={linkClass('/create')} to="/create">
             Create Meeting
+          </Link>
+          <Link className={linkClass('/invite')} to="/invite">
+            Invitations
           </Link>
           <Link className={linkClass('/archives')} to="/archives">
             Archives

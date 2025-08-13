@@ -19,7 +19,7 @@ export default function SignupPage() {
       localStorage.setItem('user', JSON.stringify(data.user))
       navigate('/')
     } catch (err) {
-      setError(err?.response?.data?.error || 'Signup failed')
+      setError(err?.response?.data?.error || 'Signup Failed')
     }
   }
 
@@ -69,7 +69,7 @@ export default function SignupPage() {
               outline: 'none',
               transition: 'border-color 0.2s'
             }}
-            onFocus={(e) => e.target.style.borderColor = '#16a34a'}
+            onFocus={(e) => e.target.style.borderColor = '#1d4ed8'}
             onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
           />
         </label>
@@ -91,7 +91,7 @@ export default function SignupPage() {
               outline: 'none',
               transition: 'border-color 0.2s'
             }}
-            onFocus={(e) => e.target.style.borderColor = '#16a34a'}
+            onFocus={(e) => e.target.style.borderColor = '#1d4ed8'}
             onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
           />
         </label>
@@ -113,7 +113,7 @@ export default function SignupPage() {
               outline: 'none',
               transition: 'border-color 0.2s'
             }}
-            onFocus={(e) => e.target.style.borderColor = '#16a34a'}
+            onFocus={(e) => e.target.style.borderColor = '#1d4ed8'}
             onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
           />
         </label>
@@ -137,18 +137,21 @@ export default function SignupPage() {
           Create account
         </button>
 
-        {error && (
-          <p style={{
-            color: '#dc2626',
-            background: '#fee2e2',
-            padding: '8px',
-            borderRadius: '6px',
-            fontSize: '14px',
-            textAlign: 'center'
-          }}>
-            {error}
-          </p>
-        )}
+{error && (
+  <p style={{
+    color: '#dc2626',
+    background: '#fee2e2',
+    padding: '8px',
+    borderRadius: '6px',
+    fontSize: '14px',
+    textAlign: 'center'
+  }}>
+    {Array.isArray(error)
+      ? error.map(e => e.message).join(', ')
+      : error}
+  </p>
+)}
+
 
         <p style={{ fontSize: '14px', color: '#374151', textAlign: 'center' }}>
           Already have an account?{' '}
