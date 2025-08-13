@@ -25,10 +25,10 @@ export default function CreateMeetingPage() {
         reminderMinutesBefore: reminder,
         invitees,
       })
-      setMessage('✅ Meeting created and invitations sent (if any).')
+      setMessage('Meeting created and invitations sent (if any).')
       setTitle(''); setDescription(''); setStartTime(''); setEndTime(''); setInviteesText('')
     } catch (err) {
-      setMessage('❌ Failed to create meeting')
+      setMessage('Failed to Create Meeting')
       console.error(err)
     }
   }

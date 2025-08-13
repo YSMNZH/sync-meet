@@ -12,6 +12,30 @@ import {
 import { enUS } from 'date-fns/locale'
 import axios from 'axios'
 
+const modalOverlay = {
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  backgroundColor: 'rgba(0,0,0,0.5)',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  zIndex: 9999,
+}
+
+const modalContent = {
+  backgroundColor: '#fff',
+  borderRadius: '12px',
+  padding: '24px',
+  width: '420px',
+  maxWidth: '90%',
+  boxShadow: '0 8px 30px rgba(0,0,0,0.2)',
+  animation: 'fadeIn 0.3s ease',
+  fontFamily: "'Inter', sans-serif",
+}
+
 const locales = { 'en-US': enUS }
 const localizer = dateFnsLocalizer({
   format,
@@ -31,6 +55,8 @@ export default function CalendarPage() {
   }))
   const [loading, setLoading] = useState(false)
 
+  const [selectedEvent, setSelectedEvent] = useState(null)
+
   const fetchEvents = async (r) => {
     setLoading(true)
     try {
@@ -41,6 +67,8 @@ export default function CalendarPage() {
         title: m.title,
         start: new Date(m.startTime),
         end: new Date(m.endTime),
+        description: m.description || 'No description provided',
+        invitees: m.invitees || [],
         color: m.colorHex || '#3b82f6',
       }))
       setEvents(mapped)
@@ -82,13 +110,14 @@ export default function CalendarPage() {
         border: '2px solid #fff',
         boxShadow:
           '0 4px 8px rgba(0, 0, 0, 0.15), 0 0 6px rgba(255, 255, 255, 0.3)',
-        padding: '8px 12px',
+        padding: '12px 16px',
         fontWeight: '700',
         fontSize: '1rem',
         lineHeight: 1.3,
         cursor: 'pointer',
         transition: 'all 0.3s ease',
         userSelect: 'none',
+        minHeight: '60px',
       },
       onMouseEnter: (e) => {
         e.currentTarget.style.transform = 'scale(1.08)'
@@ -104,16 +133,14 @@ export default function CalendarPage() {
     []
   )
 const calendarStyles = {
-  margin: '0 24px 24px 24px',  
-  height: '82vh',
+  margin: '0 24px 24px 24px',
   borderRadius: 20,
   boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
   backgroundColor: '#ffffff',
   padding: 24,
   fontSize: '1rem',
   border: '1px solid #e2e8f0',
-  overflow: 'hidden',        
-};
+}
 
 
   const headerStyles = {
@@ -134,12 +161,25 @@ const calendarStyles = {
     alignItems: 'center',
   }
 
+  useEffect(() => {
+    const styleTag = document.createElement('style')
+    styleTag.innerHTML = `
+      .rbc-month-row {
+        min-height: 140px !important;
+      }
+    `
+    document.head.appendChild(styleTag)
+    return () => {
+      document.head.removeChild(styleTag)
+    }
+  }, [])
+
   return (
     <div style={headerStyles}>
       <header style={headerInnerStyles}>
         <h1
           style={{
-            margin : '45px',
+            margin: '45px',
             fontWeight: 900,
             fontSize: '2.2rem',
             color: '#1e40af',
@@ -150,7 +190,7 @@ const calendarStyles = {
         </h1>
         <div
           style={{
-            margin:'50px',
+            margin: '50px',
             fontSize: '1.1rem',
             color: loading ? '#2563eb' : '#64748b',
             fontWeight: 600,
@@ -175,7 +215,77 @@ const calendarStyles = {
         eventPropGetter={eventPropGetter}
         popup
         popupOffset={15}
+        onSelectEvent={(event) => setSelectedEvent(event)}
+        dayPropGetter={() => ({
+          style: { position: 'relative' },
+        })}
       />
+
+{selectedEvent && (
+  <div style={modalOverlay} onClick={() => setSelectedEvent(null)}>
+    <div
+      style={{
+        ...modalContent,
+        position: 'relative',
+      }}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <button
+        onClick={() => setSelectedEvent(null)}
+        style={{
+          position: 'absolute',
+          top: '12px',
+          left: '16px',
+          background: 'none',
+          border: 'none',
+          fontSize: '1.5rem',
+          fontWeight: 'bold',
+          color: '#64748b',
+          cursor: 'pointer',
+        }}
+      >
+        ×
+      </button>
+      <h2
+        style={{
+          fontSize: '1.5rem',
+          fontWeight: 'bold',
+          marginBottom: '16px',
+          color: selectedEvent.color || '#1e40af',
+          textAlign: 'center',
+        }}
+      >
+        {selectedEvent.title}
+      </h2>
+      <p style={{ marginBottom: '8px' }}>
+        <strong style={{ color: '#3b82f6' }}>Start Time:</strong>{' '}
+        <span style={{ color: '#000' }}>
+          {format(selectedEvent.start, 'PPpp')}
+        </span>
+      </p>
+      <p style={{ marginBottom: '8px' }}>
+        <strong style={{ color: '#3b82f6' }}>End Time:</strong>{' '}
+        <span style={{ color: '#000' }}>
+          {format(selectedEvent.end, 'PPpp')}
+        </span>
+      </p>
+      <p style={{ marginBottom: '12px' }}>
+        <strong style={{ color: '#3b82f6' }}>Description:</strong>{' '}
+        <span style={{ color: '#000' }}>
+          {selectedEvent.description}
+        </span>
+      </p>
+      <p style={{ marginBottom: '12px' }}>
+        <strong style={{ color: '#3b82f6' }}>Invitees:</strong>{' '}
+        <span style={{ color: '#000' }}>
+          {selectedEvent.invitees.length > 0
+            ? selectedEvent.invitees.join(', ')
+            : 'None'}
+        </span>
+      </p>
+    </div>
+  </div>
+)}
     </div>
   )
 }
