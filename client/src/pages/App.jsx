@@ -1,34 +1,45 @@
-import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
+
 
 export default function App() {
-  const location = useLocation()
-  const navigate = useNavigate()
+  const location = useLocation();
+  const navigate = useNavigate();
   const [user, setUser] = useState(() => {
-    const u = localStorage.getItem('user')
-    return u ? JSON.parse(u) : null
-  })
+    const u = localStorage.getItem('user');
+    return u ? JSON.parse(u) : null;
+  });
 
   useEffect(() => {
     const onStorage = () => {
-      const u = localStorage.getItem('user')
-      setUser(u ? JSON.parse(u) : null)
-    }
-    window.addEventListener('storage', onStorage)
-    return () => window.removeEventListener('storage', onStorage)
-  }, [])
+      const u = localStorage.getItem('user');
+      setUser(u ? JSON.parse(u) : null);
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
 
   const linkClass = (path) =>
-    `nav-link${location.pathname === path ? ' active' : ''}`
+    `nav-link${location.pathname === path ? ' active' : ''}`;
 
   return (
-    <div style={{
-      fontFamily: 'system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif',
-      minHeight: '100vh',
-      backgroundColor: '#f3f4f6',
-      display: 'flex',
-      flexDirection: 'column'
-    }}>
+    <div
+      style={{
+        fontFamily: 'system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif',
+        minHeight: '100vh',
+        backgroundColor: '#f3f4f6',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
       <header
         style={{
           display: 'flex',
@@ -71,80 +82,164 @@ export default function App() {
             justifyContent: 'flex-end',
           }}
         >
-          <Link className={linkClass('/')} to="/">
-            Calendar
-          </Link>
-          <Link className={linkClass('/create')} to="/create">
-            Create Meeting
-          </Link>
-          <Link className={linkClass('/invite')} to="/invite">
-            Invitations
-          </Link>
-          <Link className={linkClass('/archives')} to="/archives">
-            Archives
-          </Link>
-          <Link className={linkClass('/google')} to="/google">
-            Google
-          </Link>
-          {!user && (
+          {user ? (
             <>
-              <Link className={linkClass('/login')} to="/login">
-                Login
+              <Link className={linkClass('/')} to="/">
+                Calendar
               </Link>
-              <Link className={linkClass('/signup')} to="/signup">
-                Sign up
+              <Link className={linkClass('/create')} to="/create">
+                Create Meeting
               </Link>
-            </>
-          )}
-          {user && (
-            <div
-              style={{
-                display: 'flex',
-                gap: 12,
-                alignItems: 'center',
-                marginLeft: 16,
-                whiteSpace: 'nowrap',
-                color: 'white',
-                fontWeight: '600',
-              }}
-            >
-              <span>
-                {user.name || user.email}
-              </span>
-              <button
-                onClick={() => {
-                  localStorage.removeItem('token')
-                  localStorage.removeItem('user')
-                  setUser(null)
-                  navigate('/')
-                }}
+              <Link className={linkClass('/invite')} to="/invite">
+                Invitations
+              </Link>
+              <Link className={linkClass('/archives')} to="/archives">
+                Archives
+              </Link>
+              <Link className={linkClass('/google')} to="/google">
+                Google
+              </Link>
+
+              <div
                 style={{
-                  padding: '6px 14px',
-                  backgroundColor: '#ef4444',
+                  display: 'flex',
+                  gap: 12,
+                  alignItems: 'center',
+                  marginLeft: 16,
+                  whiteSpace: 'nowrap',
                   color: 'white',
-                  border: 'none',
-                  borderRadius: 6,
-                  cursor: 'pointer',
                   fontWeight: '600',
-                  transition: 'background-color 0.2s',
                 }}
-                onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#dc2626')}
-                onMouseOut={(e) => (e.currentTarget.style.backgroundColor = '#ef4444')}
               >
-                Logout
-              </button>
-            </div>
+                <span>{user.name || user.email}</span>
+                <button
+                  onClick={() => {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    setUser(null);
+                    navigate('/');
+                  }}
+                  style={{
+                    padding: '6px 14px',
+                    backgroundColor: '#ef4444',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: 6,
+                    cursor: 'pointer',
+                    fontWeight: '600',
+                    transition: 'background-color 0.2s',
+                  }}
+                  onMouseOver={(e) =>
+                    (e.currentTarget.style.backgroundColor = '#dc2626')
+                  }
+                  onMouseOut={(e) =>
+                    (e.currentTarget.style.backgroundColor = '#ef4444')
+                  }
+                >
+                  Logout
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+
+            </>
           )}
         </nav>
       </header>
-
-      <main style={{
-        flex: 1, 
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'column'
-      }}>
-        <Outlet />
+   <ScrollToTop />
+      <main
+        style={{
+          flex: 1,
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        {!user && location.pathname === '/' ? (
+          <div
+            style={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              textAlign: 'center',
+              padding: '40px 20px',
+              color: '#1e293b',
+            }}
+          >
+            <h2
+              style={{
+                fontSize: '2.5rem',
+                fontWeight: 800,
+                background: 'linear-gradient(45deg, #dbeafe, #3b82f6)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                marginBottom: 16,
+              }}
+            >
+              Welcome to SyncMeet
+            </h2>
+            <p
+              style={{
+                fontSize: '1.25rem',
+                maxWidth: 600,
+                color: '#334155',
+                marginBottom: 32,
+              }}
+            >
+              Organize and manage your meetings seamlessly. Create, invite, and sync
+              all your schedules in one place.
+            </p>
+            <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+              <Link
+                to="/signup"
+                style={{
+                  padding: '12px 28px',
+                  backgroundColor: '#2563eb',
+                  color: 'white',
+                  borderRadius: 8,
+                  fontWeight: 600,
+                  textDecoration: 'none',
+                  boxShadow: '0 4px 12px rgba(59, 130, 246, 0.4)',
+                  transition: 'background-color 0.2s',
+                }}
+                onMouseOver={(e) =>
+                  (e.currentTarget.style.backgroundColor = '#1e40af')
+                }
+                onMouseOut={(e) =>
+                  (e.currentTarget.style.backgroundColor = '#2563eb')
+                }
+              >
+                Sign Up
+              </Link>
+              <Link
+                to="/login"
+                style={{
+                  padding: '12px 28px',
+                  backgroundColor: '#f3f4f6',
+                  color: '#2563eb',
+                  borderRadius: 8,
+                  fontWeight: 600,
+                  textDecoration: 'none',
+                  boxShadow: '0 4px 12px rgba(59, 130, 246, 0.2)',
+                  transition: 'background-color 0.2s',
+                }}
+                onMouseOver={(e) =>
+                  (e.currentTarget.style.backgroundColor = '#e0e7ff')
+                }
+                onMouseOut={(e) =>
+                  (e.currentTarget.style.backgroundColor = '#f3f4f6')
+                }
+              >
+                Login
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <Outlet />
+        )}
       </main>
 
       <style>{`
@@ -168,5 +263,5 @@ export default function App() {
         }
       `}</style>
     </div>
-  )
+  );
 }
