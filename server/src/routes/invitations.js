@@ -26,6 +26,7 @@ router.get("/my", requireAuth, async (req, res) => {
           },
         },
         invitee: { select: { id: true, name: true, email: true } },
+        
       },
     });
 

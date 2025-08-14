@@ -203,7 +203,7 @@ export default function InvitationsPage() {
 
   const renderReceivedCard = (inv, i) => {
     const meeting = inv.meeting || {};
-    const organizerName = inv.name || inv.email || "Unknown";
+    const organizerName = meeting.organizer?.name || inv.email || "Unknown";
 
     return (
       <li
@@ -225,7 +225,7 @@ export default function InvitationsPage() {
           <div style={metaTextStyles}>
             From: {organizerName} <br />
             Time: {formatDate(meeting.startTime)} - {formatDate(meeting.endTime)} <br />
-            Sent in: {formatDate(inv.createdAt)}
+            Sent at: {formatDate(inv.createdAt)}
           </div>
           {inv.status === "PENDING" ? (
             <div style={{ display: "flex", gap: 8 }}>
@@ -275,7 +275,7 @@ export default function InvitationsPage() {
           <div style={metaTextStyles}>
             To: {inviteeName} <br />
             Meeting: {formatDate(meeting.startTime)} - {formatDate(meeting.endTime)} <br />
-            Sent in: {formatDate(inv.createdAt)}
+            Sent at: {formatDate(inv.createdAt)}
           </div>
           <div style={statusBadge(inv.status)}>{inv.status.toUpperCase()}</div>
         </div>

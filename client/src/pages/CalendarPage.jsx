@@ -54,7 +54,6 @@ export default function CalendarPage() {
     end: endOfMonth(new Date()),
   }))
   const [loading, setLoading] = useState(false)
-
   const [selectedEvent, setSelectedEvent] = useState(null)
 
   const fetchEvents = async (r) => {
@@ -70,6 +69,7 @@ export default function CalendarPage() {
         description: m.description || 'No description provided',
         invitees: m.invitees || [],
         color: m.colorHex || '#3b82f6',
+        organizer: m.organizer || null, // include organizer
       }))
       setEvents(mapped)
     } catch (err) {
@@ -85,7 +85,6 @@ export default function CalendarPage() {
 
   useEffect(() => {
     let start, end
-
     if (view === Views.MONTH) {
       start = startOfMonth(date)
       end = endOfMonth(date)
@@ -97,7 +96,6 @@ export default function CalendarPage() {
       start = startOfMonth(date)
       end = endOfMonth(date)
     }
-
     setRange({ start, end })
   }, [date, view])
 
@@ -132,16 +130,16 @@ export default function CalendarPage() {
     }),
     []
   )
-const calendarStyles = {
-  margin: '0 24px 24px 24px',
-  borderRadius: 20,
-  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-  backgroundColor: '#ffffff',
-  padding: 24,
-  fontSize: '1rem',
-  border: '1px solid #e2e8f0',
-}
 
+  const calendarStyles = {
+    margin: '0 24px 24px 24px',
+    borderRadius: 20,
+    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+    backgroundColor: '#ffffff',
+    padding: 24,
+    fontSize: '1rem',
+    border: '1px solid #e2e8f0',
+  }
 
   const headerStyles = {
     fontFamily:
@@ -164,9 +162,9 @@ const calendarStyles = {
   useEffect(() => {
     const styleTag = document.createElement('style')
     styleTag.innerHTML = `
-      .rbc-month-row {
-        min-height: 140px !important;
-      }
+      .rbc-month-row { min-height: 140px !important; }
+      .rbc-time-slot { min-height: 40px !important; }
+      .rbc-row { min-height: 40px !important; }
     `
     document.head.appendChild(styleTag)
     return () => {
@@ -216,76 +214,63 @@ const calendarStyles = {
         popup
         popupOffset={15}
         onSelectEvent={(event) => setSelectedEvent(event)}
-        dayPropGetter={() => ({
-          style: { position: 'relative' },
-        })}
+        dayPropGetter={() => ({ style: { position: 'relative' } })}
       />
 
-{selectedEvent && (
-  <div style={modalOverlay} onClick={() => setSelectedEvent(null)}>
-    <div
-      style={{
-        ...modalContent,
-        position: 'relative',
-      }}
-      onClick={(e) => e.stopPropagation()}
-    >
-      <button
-        onClick={() => setSelectedEvent(null)}
-        style={{
-          position: 'absolute',
-          top: '12px',
-          left: '16px',
-          background: 'none',
-          border: 'none',
-          fontSize: '1.5rem',
-          fontWeight: 'bold',
-          color: '#64748b',
-          cursor: 'pointer',
-        }}
-      >
-        ×
-      </button>
-      <h2
-        style={{
-          fontSize: '1.5rem',
-          fontWeight: 'bold',
-          marginBottom: '16px',
-          color: selectedEvent.color || '#1e40af',
-          textAlign: 'center',
-        }}
-      >
-        {selectedEvent.title}
-      </h2>
-      <p style={{ marginBottom: '8px' }}>
-        <strong style={{ color: selectedEvent.color || '#1e40af' }}>Start Time:</strong>{' '}
-        <span style={{ color: '#000' }}>
-          {format(selectedEvent.start, 'PPpp')}
-        </span>
-      </p>
-      <p style={{ marginBottom: '8px' }}>
-        <strong style={{ color: selectedEvent.color || '#1e40af' }}>End Time:</strong>{' '}
-        <span style={{ color: '#000' }}>
-          {format(selectedEvent.end, 'PPpp')}
-        </span>
-      </p>
-      <p style={{ marginBottom: '12px' }}>
-        <strong style={{ color: selectedEvent.color || '#1e40af' }}>Description:</strong>{' '}
-        <span style={{ color: '#000' }}>
-          {selectedEvent.description}
-        </span>
-      </p>
-      <p style={{ marginBottom: '12px' }}>
-        <strong style={{ color: selectedEvent.color || '#1e40af' }}>Invitees:</strong>{' '}
-        <span style={{ color: '#000' }}>
-          {selectedEvent.invitees.length > 0
-            ? selectedEvent.invitees.join(', ')
-            : 'None'}
-        </span>
-      </p>
-    </div>
-  </div>
-)}
+      {selectedEvent && (
+        <div style={modalOverlay} onClick={() => setSelectedEvent(null)}>
+          <div
+            style={{ ...modalContent, position: 'relative' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setSelectedEvent(null)}
+              style={{
+                position: 'absolute',
+                top: '12px',
+                left: '16px',
+                background: 'none',
+                border: 'none',
+                fontSize: '1.5rem',
+                fontWeight: 'bold',
+                color: '#64748b',
+                cursor: 'pointer',
+              }}
+            >
+              ×
+            </button>
+            <h2
+              style={{
+                fontSize: '1.5rem',
+                fontWeight: 'bold',
+                marginBottom: '16px',
+                color: selectedEvent.color || '#1e40af',
+                textAlign: 'center',
+              }}
+            >
+              {selectedEvent.title}
+            </h2>
+            <p>
+              <strong style={{ color: selectedEvent.color || '#1e40af' }}>
+                Start Time:
+              </strong>{' '}
+              <span>{format(selectedEvent.start, 'PPpp')}</span>
+            </p>
+            <p>
+              <strong style={{ color: selectedEvent.color || '#1e40af' }}>
+                End Time:
+              </strong>{' '}
+              <span>{format(selectedEvent.end, 'PPpp')}</span>
+            </p>
+            <p>
+              <strong style={{ color: selectedEvent.color || '#1e40af' }}>
+                Description:
+              </strong>{' '}
+              <span>{selectedEvent.description}</span>
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
