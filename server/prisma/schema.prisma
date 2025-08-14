@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+}
+
+model User {
+  id           String        @id @default(auto()) @map("_id") @db.ObjectId
+  email        String        @unique
+  passwordHash String
+  name         String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  invitations  Invitation[]
+  meetings     Meeting[]     @relation("OrganizerMeetings")
+}
+
+model Meeting {
+  id          String         @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String?
+  startTime   DateTime
+  endTime     DateTime
+  colorHex    String?        
+  inviteSlug  String         @unique @default(cuid())
+  reminderMinutesBefore Int? 
+  archived    Boolean        @default(false)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  organizer   User?          @relation("OrganizerMeetings", fields: [organizerId], references: [id])
+  organizerId String?        @db.ObjectId
+  organizerEmail String?
+
+  googleEventId String?
+
+  invitations Invitation[]
+}
+
+model Invitation {
+  id           String           @id @default(auto()) @map("_id") @db.ObjectId
+  meeting      Meeting          @relation(fields: [meetingId], references: [id])
+  meetingId    String           @db.ObjectId
+  invitee      User?            @relation(fields: [inviteeId], references: [id])
+  inviteeId    String?          @db.ObjectId
+  email        String
+  token        String           @unique @default(cuid())
+  status       InvitationStatus @default(PENDING)
+  respondedAt  DateTime?
+  createdAt    DateTime         @default(now())
+  reminderSent Boolean         @default(false)
+}
+
+model GoogleCredential {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  ownerEmail   String   @unique
+  accessToken  String
+  refreshToken String
+  scope        String?
+  tokenType    String?
+  expiryDate   BigInt?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
