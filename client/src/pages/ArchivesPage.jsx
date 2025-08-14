@@ -6,7 +6,7 @@ const pageStyles = {
   padding: '40px 20px',
   background: 'linear-gradient(135deg, #dbeafe, #eff6ff)',
   fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-  color: '#1e3a8a', // dark blue text
+  color: '#1e3a8a', 
 }
 
 const headerStyles = {
@@ -14,7 +14,7 @@ const headerStyles = {
   fontWeight: '700',
   marginBottom: 24,
   textAlign: 'center',
-  color: '#2563eb', // brighter blue
+  color: '#2563eb', 
 }
 
 const listStyles = {

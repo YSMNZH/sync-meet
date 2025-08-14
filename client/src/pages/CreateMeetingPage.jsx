@@ -10,10 +10,12 @@ export default function CreateMeetingPage() {
   const [reminder, setReminder] = useState(30)
   const [inviteesText, setInviteesText] = useState('')
   const [message, setMessage] = useState('')
+  const [isError, setIsError] = useState(false) 
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setMessage('')
+    setIsError(false)
     try {
       const invitees = inviteesText.split(/[,\n]/).map(s => s.trim()).filter(Boolean)
       await axios.post('/api/meetings', {
@@ -25,10 +27,18 @@ export default function CreateMeetingPage() {
         reminderMinutesBefore: reminder,
         invitees,
       })
-      setMessage('Meeting created and invitations sent (if any).')
+      setMessage('Meeting Created and Invitations Sent (If any).')
+      setIsError(false)
       setTitle(''); setDescription(''); setStartTime(''); setEndTime(''); setInviteesText('')
     } catch (err) {
-      setMessage('Failed to Create Meeting')
+      let errorMsg = 'An error occurred'
+      if (err.response && err.response.data && err.response.data.error) {
+        errorMsg = err.response.data.error
+      } else if (err.message) {
+        errorMsg = err.message
+      }
+      setMessage(errorMsg)
+      setIsError(true)
       console.error(err)
     }
   }
@@ -222,8 +232,8 @@ export default function CreateMeetingPage() {
 
         {message && (
           <p style={{
-            color: message.startsWith('❌') ? '#dc2626' : '#16a34a',
-            background: message.startsWith('❌') ? '#fee2e2' : '#dcfce7',
+            color: isError ? '#dc2626' : '#16a34a',
+            background: isError ? '#fee2e2' : '#dcfce7',
             padding: '10px',
             borderRadius: '6px',
             fontSize: '14px',

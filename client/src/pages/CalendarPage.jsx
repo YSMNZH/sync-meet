@@ -258,25 +258,25 @@ const calendarStyles = {
         {selectedEvent.title}
       </h2>
       <p style={{ marginBottom: '8px' }}>
-        <strong style={{ color: '#3b82f6' }}>Start Time:</strong>{' '}
+        <strong style={{ color: selectedEvent.color || '#1e40af' }}>Start Time:</strong>{' '}
         <span style={{ color: '#000' }}>
           {format(selectedEvent.start, 'PPpp')}
         </span>
       </p>
       <p style={{ marginBottom: '8px' }}>
-        <strong style={{ color: '#3b82f6' }}>End Time:</strong>{' '}
+        <strong style={{ color: selectedEvent.color || '#1e40af' }}>End Time:</strong>{' '}
         <span style={{ color: '#000' }}>
           {format(selectedEvent.end, 'PPpp')}
         </span>
       </p>
       <p style={{ marginBottom: '12px' }}>
-        <strong style={{ color: '#3b82f6' }}>Description:</strong>{' '}
+        <strong style={{ color: selectedEvent.color || '#1e40af' }}>Description:</strong>{' '}
         <span style={{ color: '#000' }}>
           {selectedEvent.description}
         </span>
       </p>
       <p style={{ marginBottom: '12px' }}>
-        <strong style={{ color: '#3b82f6' }}>Invitees:</strong>{' '}
+        <strong style={{ color: selectedEvent.color || '#1e40af' }}>Invitees:</strong>{' '}
         <span style={{ color: '#000' }}>
           {selectedEvent.invitees.length > 0
             ? selectedEvent.invitees.join(', ')
