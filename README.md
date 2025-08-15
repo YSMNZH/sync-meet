@@ -40,10 +40,6 @@ App runs at http://localhost:5173
 
 <br><br>
 
-<img width="1882" height="705" alt="image" src="https://github.com/user-attachments/assets/55a7f75f-e87e-495f-90c8-15fc4e3b8e0e" />
-
-<br><br>
-
 <img width="1881" height="739" alt="image" src="https://github.com/user-attachments/assets/72f88114-c8c8-4c4c-99b4-460244866b0d" />
 
 <br><br>
