@@ -203,7 +203,7 @@ export default function InvitationsPage() {
 
   const renderReceivedCard = (inv, i) => {
     const meeting = inv.meeting || {};
-    const organizerName = meeting.organizer?.name || inv.email || "Unknown";
+    const organizerName = meeting.organizer?.name || meeting.organizer?.email || "Unknown";
 
     return (
       <li

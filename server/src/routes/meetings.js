@@ -102,7 +102,7 @@ router.post("/", requireAuth, async (req, res) => {
     const end = new Date(input.endTime);
 
     if (start >= end) {
-      return res.status(400).json({ error: "startTime must be before endTime" });
+      return res.status(400).json({ error: "Start Time must be before End Time" });
     }
 
     if (await hasOverlap(req.user.id, req.user.email, start, end)) {
