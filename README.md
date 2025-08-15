@@ -44,7 +44,7 @@ App runs at http://localhost:5173
 
 <br><br>
 
-<img width="1915" height="837" alt="image" src="https://github.com/user-attachments/assets/ab7f0872-08ef-4636-b792-849ee8a9889c" />
+<img width="1881" height="739" alt="image" src="https://github.com/user-attachments/assets/72f88114-c8c8-4c4c-99b4-460244866b0d" />
 
 <br><br>
 
@@ -52,7 +52,7 @@ App runs at http://localhost:5173
 
 <br><br>
 
-<img width="1912" height="895" alt="image" src="https://github.com/user-attachments/assets/6ce30a19-0240-41e7-80ac-bd6633cebb60" />
+<img width="1867" height="685" alt="image" src="https://github.com/user-attachments/assets/d19b305f-8afb-4694-81f6-ab5562f34b4c" />
 
 <br><br>
 
