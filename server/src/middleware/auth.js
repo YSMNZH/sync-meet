@@ -3,12 +3,20 @@ import { prisma } from "../prisma.js";
 import { config } from "../config/env.js";
 
 export async function requireAuth(req, res, next) {
-  const authHeader = req.headers.authorization;
-  if (!authHeader) return res.status(401).json({ error: "No token provided" });
+  let token;
+  
+  if (req.cookies && req.cookies.token) {
+    token = req.cookies.token;
+  }
+  
+  else if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {    token = req.headers.authorization.replace("Bearer ", "");
+  }
+  
+  if (!token) {
+    return res.status(401).json({ error: "No token provided" });
+  }
 
-  const token = authHeader.replace("Bearer ", "");
-  try {
-    const payload = jwt.verify(token, config.jwtSecret);
+  try {    const payload = jwt.verify(token, config.jwtSecret);
     const user = await prisma.user.findUnique({ where: { id: payload.sub } });
     if (!user) return res.status(401).json({ error: "Invalid user" });
     req.user = user;

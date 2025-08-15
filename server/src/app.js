@@ -1,4 +1,5 @@
 import express from "express";
+import cookieParser from 'cookie-parser';
 import cors from "cors";
 import { config } from "./config/env.js";
 import meetingsRouter from "./routes/meetings.js";
@@ -10,7 +11,7 @@ const app = express();
 
 app.use(cors({ origin: config.clientUrl, credentials: true }));
 app.use(express.json());
-
+app.use(cookieParser());
 app.get("/api/health", (_req, res) => {
   res.json({ ok: true, service: "syncmeet-server" });
 });

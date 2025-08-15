@@ -2,6 +2,7 @@ import { Router } from "express";
 import { z } from "zod";
 import { prisma } from "../prisma.js";
 import { requireAuth } from "../middleware/auth.js";
+import { syncMeetingToGoogle } from '../services/google.js';
 
 const router = Router();
 
@@ -17,8 +18,7 @@ const createMeetingSchema = z.object({
 
 const normalizeHex = (hex) => {
   if (hex == null) return null;
-  return hex.startsWith("#") ? hex : `#${hex}`;
-};
+  return hex.startsWith("#") ? hex : `#${hex}`;};
 
 const parseBool = (v) => (typeof v === "string" ? v.toLowerCase() === "true" : !!v);
 
@@ -43,15 +43,13 @@ function addLocalTime(meeting, currentUserId) {
     ...meeting,
     startTimeLocal: meeting.startTime
       ? new Date(meeting.startTime).toLocaleString("en-US", {
-          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        })
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      })
       : null,
     endTimeLocal: meeting.endTime
-      ? new Date(meeting.endTime).toLocaleString("en-US", {
-          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        })
-      : null,
-    organizer: meeting.organizerId === currentUserId,
+      ? new Date(meeting.endTime).toLocaleString("en-US", {        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      })
+      : null,    organizer: meeting.organizerId === currentUserId,
   };
 }
 
@@ -63,7 +61,7 @@ async function autoArchivePastMeetings() {
       data: { archived: true },
     });
   } catch (e) {
-    console.error("autoArchivePastMeetings Failed:", e?.message || e);
+    // console.error("autoArchivePastMeetings Failed:", e?.message || e);
   }
 }
 
@@ -95,8 +93,7 @@ async function hasOverlap(userId, userEmail, start, end, excludeId = null) {
 }
 
 router.post("/", requireAuth, async (req, res) => {
-  try {
-    const input = createMeetingSchema.parse(req.body);
+  try {    const input = createMeetingSchema.parse(req.body);
     const now = new Date();
     const start = new Date(input.startTime);
     const end = new Date(input.endTime);
@@ -106,9 +103,7 @@ router.post("/", requireAuth, async (req, res) => {
     }
 
     if (await hasOverlap(req.user.id, req.user.email, start, end)) {
-      return res
-        .status(400)
-        .json({ error: "You already have a Meeting during this Time" });
+      return res.status(400).json({ error: "You already have a Meeting during this Time" });
     }
 
     const meeting = await prisma.meeting.create({
@@ -127,9 +122,7 @@ router.post("/", requireAuth, async (req, res) => {
 
     const invitees = input.invitees || [];
     if (invitees.includes(req.user.email)) {
-      return res
-        .status(400)
-        .json({ error: "You Cannot Invite Yourself" });
+      return res.status(400).json({ error: "You Cannot Invite Yourself" });
     }
 
     if (invitees.length > 0) {
@@ -142,11 +135,22 @@ router.post("/", requireAuth, async (req, res) => {
       );
     }
 
+    try {
+      const googleCredential = await prisma.googleCredential.findUnique({
+        where: { ownerEmail: req.user.email },
+      });
+      if (googleCredential) {        // console.log(`User ${req.user.email} is connected to Google. Syncing new meeting ID: ${meeting.id}`);
+        await syncMeetingToGoogle(meeting.id, req.user.id, req.user.email);
+        // console.log(`Meeting ${meeting.id} synced successfully to Google Calendar.`);
+      }
+    } catch (syncError) {
+      // console.error(`BACKGROUND_SYNC_FAILED: Could not sync meeting ${meeting.id} to Google Calendar for user ${req.user.email}. Error:`, syncError.message);
+    }
+
     res.status(201).json(addLocalTime(meeting, req.user.id));
   } catch (err) {
-    if (err.name === "ZodError")
-      return res.status(400).json({ error: err.issues });
-    console.error(err);
+    if (err.name === "ZodError") return res.status(400).json({ error: err.issues });
+    // console.error(err);
     res.status(500).json({ error: "Failed to Create Meeting" });
   }
 });
@@ -161,7 +165,7 @@ router.get("/archives/list", requireAuth, async (req, res) => {
     });
     res.json(meetings.map((m) => addLocalTime(m, req.user.id)));
   } catch (err) {
-    console.error(err);
+    // console.error(err);
     res.status(500).json({ error: "Failed to Fetch Archives" });
   }
 });
@@ -175,9 +179,9 @@ router.get("/", requireAuth, async (req, res) => {
     const dateFilter =
       start && end
         ? {
-            startTime: { gte: new Date(String(start)) },
-            endTime: { lte: new Date(String(end)) },
-          }
+          startTime: { gte: new Date(String(start)) },
+          endTime: { lte: new Date(String(end)) },
+        }
         : {};
 
     const meetings = await prisma.meeting.findMany({
@@ -192,7 +196,7 @@ router.get("/", requireAuth, async (req, res) => {
 
     res.json(meetings.map((m) => addLocalTime(m, req.user.id)));
   } catch (err) {
-    console.error(err);
+    // console.error(err);
     res.status(500).json({ error: "Failed to Fetch Meetings" });
   }
 });
@@ -200,14 +204,13 @@ router.get("/", requireAuth, async (req, res) => {
 router.get("/:id", requireAuth, async (req, res) => {
   try {
     await autoArchivePastMeetings();
-    const meeting = await prisma.meeting.findFirst({
-      where: { id: req.params.id, ...userScope(req.user) },
+    const meeting = await prisma.meeting.findFirst({      where: { id: req.params.id, ...userScope(req.user) },
       include: { invitations: true },
     });
     if (!meeting) return res.status(404).json({ error: "Not Found" });
     res.json(addLocalTime(meeting, req.user.id));
   } catch (err) {
-    console.error(err);
+    // console.error(err);
     res.status(500).json({ error: "Failed to Fetch Meeting" });
   }
 });
@@ -234,41 +237,27 @@ router.patch("/:id", requireAuth, async (req, res) => {
       return res.status(400).json({ error: "Start Time Must be Before End Time" });
     }
 
-    if (
-      await hasOverlap(req.user.id, req.user.email, newStart, newEnd, existing.id)
-    ) {
-      return res
-        .status(400)
-        .json({ error: "You already have a Meeting during this Time" });
+    if (await hasOverlap(req.user.id, req.user.email, newStart, newEnd, existing.id)) {
+      return res.status(400).json({ error: "You already have a Meeting during this Time" });
     }
 
     const updated = await prisma.meeting.update({
       where: { id: req.params.id },
       data: {
         ...(input.title !== undefined ? { title: input.title } : {}),
-        ...(input.description !== undefined
-          ? { description: input.description }
-          : {}),
-        ...(input.startTime !== undefined ? { startTime: newStart } : {}),
+        ...(input.description !== undefined ? { description: input.description } : {}),        ...(input.startTime !== undefined ? { startTime: newStart } : {}),
         ...(input.endTime !== undefined ? { endTime: newEnd } : {}),
-        ...(input.colorHex !== undefined
-          ? { colorHex: normalizeHex(input.colorHex) }
-          : {}),
-        ...(input.reminderMinutesBefore !== undefined
-          ? { reminderMinutesBefore: input.reminderMinutesBefore }
-          : {}),
+        ...(input.colorHex !== undefined ? { colorHex: normalizeHex(input.colorHex) } : {}),
+        ...(input.reminderMinutesBefore !== undefined ? { reminderMinutesBefore: input.reminderMinutesBefore } : {}),
         archived: newEnd < now,
       },
     });
 
     res.json(addLocalTime(updated, req.user.id));
   } catch (err) {
-    if (err.name === "ZodError")
-      return res.status(400).json({ error: err.issues });
-    console.error(err);
-    res.status(500).json({ error: "Failed to Update Meeting" });
-  }
-});
+    if (err.name === "ZodError") return res.status(400).json({ error: err.issues });
+    // console.error(err);    res.status(500).json({ error: "Failed to Update Meeting" });
+  }});
 
 router.post("/:id/archive", requireAuth, async (req, res) => {
   try {
@@ -284,7 +273,7 @@ router.post("/:id/archive", requireAuth, async (req, res) => {
     });
     res.json(addLocalTime(updated, req.user.id));
   } catch (err) {
-    console.error(err);
+    // console.error(err);
     res.status(500).json({ error: "Failed to Archive Meeting" });
   }
 });
