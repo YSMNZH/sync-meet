@@ -24,7 +24,7 @@
 - npm run dev
 - Server runs at http://localhost:4000
 
-3. Frontend
+2. Frontend
 - cd client
 - npm i
 - npm run dev

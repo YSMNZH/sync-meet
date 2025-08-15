@@ -18,13 +18,14 @@ export default function SignupPage() {
       return;
     }
 
+    
     try {
       const { data } = await axios.post('/api/auth/signup', { email, password, name });
 
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
       axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
-      navigate('/');
+      navigate('/login');
       window.location.reload();
     } catch (err) {
       setError(err?.response?.data?.error || 'Signup Failed');
