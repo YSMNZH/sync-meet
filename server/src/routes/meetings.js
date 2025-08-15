@@ -141,16 +141,16 @@ router.post("/", requireAuth, async (req, res) => {
       });
       if (googleCredential) {        // console.log(`User ${req.user.email} is connected to Google. Syncing new meeting ID: ${meeting.id}`);
         await syncMeetingToGoogle(meeting.id, req.user.id, req.user.email);
-        // console.log(`Meeting ${meeting.id} synced successfully to Google Calendar.`);
+          console.log(`Meeting ${meeting.id} synced successfully to Google Calendar.`);
       }
     } catch (syncError) {
-      // console.error(`BACKGROUND_SYNC_FAILED: Could not sync meeting ${meeting.id} to Google Calendar for user ${req.user.email}. Error:`, syncError.message);
+        console.error(`BACKGROUND_SYNC_FAILED: Could not sync meeting ${meeting.id} to Google Calendar for user ${req.user.email}. Error:`, syncError.message);
     }
 
     res.status(201).json(addLocalTime(meeting, req.user.id));
   } catch (err) {
     if (err.name === "ZodError") return res.status(400).json({ error: err.issues });
-    // console.error(err);
+      console.error(err);
     res.status(500).json({ error: "Failed to Create Meeting" });
   }
 });
@@ -165,7 +165,7 @@ router.get("/archives/list", requireAuth, async (req, res) => {
     });
     res.json(meetings.map((m) => addLocalTime(m, req.user.id)));
   } catch (err) {
-    // console.error(err);
+      console.error(err);
     res.status(500).json({ error: "Failed to Fetch Archives" });
   }
 });
@@ -196,7 +196,7 @@ router.get("/", requireAuth, async (req, res) => {
 
     res.json(meetings.map((m) => addLocalTime(m, req.user.id)));
   } catch (err) {
-    // console.error(err);
+      console.error(err);
     res.status(500).json({ error: "Failed to Fetch Meetings" });
   }
 });
@@ -256,7 +256,7 @@ router.patch("/:id", requireAuth, async (req, res) => {
     res.json(addLocalTime(updated, req.user.id));
   } catch (err) {
     if (err.name === "ZodError") return res.status(400).json({ error: err.issues });
-    // console.error(err);    res.status(500).json({ error: "Failed to Update Meeting" });
+        console.error(err);    res.status(500).json({ error: "Failed to Update Meeting" });
   }});
 
 router.post("/:id/archive", requireAuth, async (req, res) => {
@@ -273,7 +273,7 @@ router.post("/:id/archive", requireAuth, async (req, res) => {
     });
     res.json(addLocalTime(updated, req.user.id));
   } catch (err) {
-    // console.error(err);
+    console.error(err);
     res.status(500).json({ error: "Failed to Archive Meeting" });
   }
 });
