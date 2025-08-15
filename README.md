@@ -16,19 +16,19 @@
 ## Getting Started (Local)
 
 1. Backend
-cd server
-cp .env .env.local
-npm i
-npx prisma db push
-npx prisma generate
-npm run dev
-Server runs at http://localhost:4000
+- cd server
+- cp .env .env.local
+- npm i
+- npx prisma db push
+- npx prisma generate
+- npm run dev
+- Server runs at http://localhost:4000
 
 3. Frontend
-cd client
-npm i
-npm run dev
-App runs at http://localhost:5173
+- cd client
+- npm i
+- npm run dev
+- App runs at http://localhost:5173
 
 ## Screenshots
 
