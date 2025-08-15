@@ -24,8 +24,7 @@ export default function SignupPage() {
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
       axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
-      navigate('/');
-      window.location.reload();
+      navigate('/login');
     } catch (err) {
       setError(err?.response?.data?.error || 'Signup Failed');
     }
