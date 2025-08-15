@@ -18,6 +18,7 @@ export default function LoginPage() {
       axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`
       localStorage.setItem('user', JSON.stringify(data.user))
             navigate('/')
+            window.location.reload();
     } catch (err) {
       setError(err?.response?.data?.error || 'Login failed')
     }
