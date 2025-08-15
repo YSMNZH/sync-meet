@@ -45,6 +45,8 @@ model Meeting {
 
   googleEventId String?
 
+  organizerReminderSent   Boolean         @default(false) 
+
   invitations Invitation[]
 }
 

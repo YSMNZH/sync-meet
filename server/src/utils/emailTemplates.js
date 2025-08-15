@@ -11,7 +11,7 @@ export function buildReminderEmail({ meeting }) {
     <div style="padding: 20px; color: #333;">
       <h2 style="margin-top: 0; color: #4f46e5;">${meeting.title}</h2>
       <p style="margin: 10px 0;">${meeting.description || "No description provided."}</p>
-      <p style="margin: 10px 0;"><strong>Organizer:</strong> ${meeting.organizer?.name || "N/A"}</p>
+      <p style="margin: 10px 0;"><strong>Organizer:</strong> ${meeting.organizer?.name || meeting.organizerEmail || "N/A"}</p>
       <p style="margin: 10px 0;"><strong>Starts at:</strong> ${format(new Date(meeting.startTime), "PPpp")}</p>
       <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 20px 0;">
       <p style="text-align: center; color: #555; font-size: 14px;">This is an automated reminder from SyncMeet.</p>

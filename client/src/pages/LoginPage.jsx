@@ -13,10 +13,12 @@ export default function LoginPage() {
     setError('')
     try {
       const { data } = await axios.post('/api/auth/login', { email, password })
+      
       localStorage.setItem('token', data.token)
       axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`
       localStorage.setItem('user', JSON.stringify(data.user))
-      navigate('/')
+            navigate('/')
+            window.location.reload();
     } catch (err) {
       setError(err?.response?.data?.error || 'Login failed')
     }

@@ -9,13 +9,19 @@ const router = Router();
 router.post("/signup", async (req, res) => {
   try {
     const { email, password, name } = req.body;
+    if (!password || password.length < 6) {
+      return res.status(400).json({ error: "Password must be at least 6 characters long" });
+    }
     const existing = await prisma.user.findUnique({ where: { email } });
     if (existing) return res.status(400).json({ error: "Email already in use" });
-
     const passwordHash = await bcrypt.hash(password, 10);
     const user = await prisma.user.create({ data: { email, name, passwordHash } });
+    const token = jwt.sign(
+      { sub: user.id, email: user.email },
+      config.jwtSecret,
+      { expiresIn: "7d" }
+    );
 
-    const token = jwt.sign({ sub: user.id, email: user.email }, config.jwtSecret, { expiresIn: "7d" });
     res.status(201).json({ user, token });
   } catch (err) {
     console.error(err);
@@ -23,7 +29,9 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-router.post("/login", async (req, res) => {  try {
+
+router.post("/login", async (req, res) => {
+  try {
     const { email, password } = req.body;
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) return res.status(401).json({ error: "Invalid credentials" });
