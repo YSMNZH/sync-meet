@@ -36,11 +36,11 @@ App runs at http://localhost:5173
 
 <br><br>
 
-<img width="1920" height="878" alt="image" src="https://github.com/user-attachments/assets/4365a14b-2c4b-4511-b1ec-663200d96492" />
+<img width="1886" height="865" alt="image" src="https://github.com/user-attachments/assets/34cda443-8f69-4bd6-9b69-6d33bc9d6196" />
 
 <br><br>
 
-<img width="1917" height="779" alt="image" src="https://github.com/user-attachments/assets/975b0228-ef36-41c5-8ad7-db4c664d6814" />
+<img width="1881" height="739" alt="image" src="https://github.com/user-attachments/assets/7556f0ab-1d9d-40ba-b964-022db50c15b9" />
 
 <br><br>
 
